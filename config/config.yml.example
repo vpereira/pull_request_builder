@@ -1,0 +1,6 @@
+# generate and customize your token here
+# https://github.com/settings/tokens
+#
+:credentials:
+  :access_token: my-oath-tokens
+:logging: false

@@ -1,0 +1,21 @@
+<project name="<%= name %>">
+  <title><%=title%></title>
+  <description/>
+  <build>
+    <enable/>
+  </build>
+  <publish>
+    <disable/>
+  </publish>
+  <debuginfo>
+    <enable/>
+  </debuginfo>
+  <% repositories_to_build.each do |repository| %>
+  <repository name="<%= repository.name %>">
+    <path project="<%= repository.path %>" repository="<%= repository.name %>"/>
+    <% repository.arches.each do |arch| %>
+    <arch><%= arch %></arch>
+    <% end %>
+  </repository>
+  <% end %>
+</project>
