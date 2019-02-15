@@ -108,9 +108,14 @@ module PullRequestBuilder
         OpenStruct.new(name: 'SLE_12_SP4', path: 'OBS:Server:Unstable', arches: ['x86_64'])
       ]
     end
-
+    # TODO
+    # package name should be configurable
     def create_package
-      capture2e_with_logs("osc meta pkg #{obs_project_name} obs-server --file #{new_package_template}")
+      Tempfile.open("#{obs_project_name}-obs-server-meta") do |f|
+        f.write(new_package_template)
+        f.close
+        capture2e_with_logs("osc meta pkg #{obs_project_name} obs-server --file #{f.path}")
+      end
     end
 
     def new_package_template
