@@ -72,6 +72,8 @@ GEM
       rainbow (>= 2.2.2, < 4.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (~> 1.4.0)
+    rubocop-rspec (1.32.0)
+      rubocop (>= 0.60.0)
     ruby-progressbar (1.10.0)
     safe_yaml (1.0.4)
     sawyer (0.8.1)
@@ -98,8 +100,9 @@ DEPENDENCIES
   rspec (~> 3.8)
   rspec-html-matchers (~> 0.9.1)
   rubocop (~> 0.64)
+  rubocop-rspec (~> 1.32)
   vcr (~> 4.0)
   webmock (~> 3.5)
 
 BUNDLED WITH
-   1.16.6
+   1.17.2
