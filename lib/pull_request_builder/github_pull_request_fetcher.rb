@@ -18,7 +18,7 @@ module PullRequestBuilder
         @logger.info(line_seperator(pull_request))
         package = ObsPullRequestPackage.new(pull_request: pull_request, logger: @logger)
         package.create
-        GitHubStatusReporter.new(package: package, client: @client, logger: @logger).report
+        GitHubStatusReporter.new(repository: prj, package: package, client: @client, logger: @logger).report
         package
       end
     end

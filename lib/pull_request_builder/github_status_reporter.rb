@@ -3,12 +3,12 @@
 module PullRequestBuilder
   class GitHubStatusReporter
     include ActiveModel::Model
-    attr_accessor :client, :logger, :package
+    attr_accessor :client, :logger, :package, :repository
 
     def report
       if update?
         logger.info("Update status to state #{state}.")
-        client.create_status('openSUSE/open-build-service', package.commit_sha, state, options)
+        client.create_status(repository, package.commit_sha, state, options)
       else
         logger.info('State did not change, continue...')
       end
@@ -19,7 +19,7 @@ module PullRequestBuilder
     private
 
     def update?
-      statuses = client.statuses('openSUSE/open-build-service', package.commit_sha)
+      statuses = client.statuses(repository, package.commit_sha)
       build_status = statuses.select { |state| state.context == context }.first
       build_status.nil? || state.to_s != build_status.state || description != build_status.description
     end
