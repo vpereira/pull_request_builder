@@ -39,13 +39,13 @@ module PullRequestBuilder
     end
 
     def state
-      state = :success
       if summary[:failure] > 0
-        state = :failure
+        :failure
       elsif (summary[:pending] > 0) || (summary[:success] == 0)
-        state = :pending
+        :pending
+      else
+        :success
       end
-      state
     end
 
     def options
