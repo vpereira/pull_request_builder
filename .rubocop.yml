@@ -6,6 +6,11 @@ AllCops:
     - 'fixtures/**/*'
   TargetRubyVersion: 2.5
 
+RSpec/PredicateMatcher:
+  Enabled: false
+RSpec/AnyInstance:
+  Enabled: false
+
 Naming/PredicateName:
   # Method define macros for dynamically generated method.
   MethodDefinitionMacros:
@@ -75,6 +80,7 @@ Metrics/LineLength:
 
 Metrics/BlockLength:
   Exclude:
+    - '*.gemspec'
     - 'Rakefile'
     - '**/*.rake'
     - 'spec/**/*.rb'

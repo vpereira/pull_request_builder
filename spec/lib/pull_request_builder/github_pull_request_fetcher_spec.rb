@@ -16,7 +16,9 @@ RSpec.describe GithubPullRequestFetcher, :vcr do
     end
 
     let(:fetcher) { GithubPullRequestFetcher.new(credentials: { access_token: 'b723c67f1309dcded3674757c2e151daa39e358a' }) }
+
     let(:result) { fetcher.pull('openSUSE/open-build-service', 'master') }
+
     it { expect(result).to be_an(Array) }
     it { expect(result.first).to be_an(ObsPullRequestPackage) }
   end

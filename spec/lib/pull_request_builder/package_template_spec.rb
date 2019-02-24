@@ -10,8 +10,8 @@ RSpec.describe PackageTemplate do
   end
 
   describe '.to_xml' do
-    it { expect(PackageTemplate.new('foo').to_xml).to be_a(String) }
-    it { expect(PackageTemplate.new('foo').to_xml).to have_tag('package') }
-    it { expect(PackageTemplate.new('foo').to_xml).to have_tag('package', with: { name: 'foo' }) }
+    it { expect(described_class.new('foo').to_xml).to be_a(String) }
+    it { expect(described_class.new('foo').to_xml).to have_tag('package') }
+    it { expect(described_class.new('foo').to_xml).to have_tag('package', with: { name: 'foo' }) }
   end
 end

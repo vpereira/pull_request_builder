@@ -33,15 +33,15 @@ module PullRequestBuilder
       count_finished = count_all - summary[:pending]
 
       result = "#{count_finished}/#{count_all} processed"
-      result << " | #{summary[:failure]} failures" if summary[:failure] > 0
+      result << " | #{summary[:failure]} failures" if summary[:failure].positive? 
 
       result
     end
 
     def state
-      if summary[:failure] > 0
+      if summary[:failure].positive? 
         :failure
-      elsif (summary[:pending] > 0) || (summary[:success] == 0)
+      elsif (summary[:pending].positive?) || (summary[:success].zero?)
         :pending
       else
         :success
