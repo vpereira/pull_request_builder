@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module PullRequestBuilder
-  class GitHubStatusReporter
+  class GithubStatusReporter
     include ActiveModel::Model
     attr_accessor :client, :logger, :package, :repository
 
