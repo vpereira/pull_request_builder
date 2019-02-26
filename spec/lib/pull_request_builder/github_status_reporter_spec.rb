@@ -5,16 +5,14 @@ require 'spec_helper'
 include PullRequestBuilder
 
 RSpec.describe GithubStatusReporter, :vcr do
-
   let(:client) do
-    Octokit::Client.new({access_token: '6fccee211b93aae7aa24b0263d05d59cdx4a9ec1', 
-                         logging: false})
+    Octokit::Client.new(access_token: '6fccee211b93aae7aa24b0263d05d59cdx4a9ec1',
+                        logging: false)
   end
 
   let(:github_status_reporter) do
-      described_class.new(repository: 'vpereira/hello_world', package: 'hello_world', client: client)
+    described_class.new(repository: 'vpereira/hello_world', package: 'hello_world', client: client)
   end
-
 
   describe '.initialize' do
     it { expect(described_class.new(repository: 'foo', package: 'bar')).not_to be_nil }

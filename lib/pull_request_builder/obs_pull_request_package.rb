@@ -81,18 +81,19 @@ module PullRequestBuilder
         tmp_meta_file.close
         tmp_meta_file.unlink
       end
-     end
+    end
 
     def osc_meta(tmpfile, operation)
       case operation
       when :prj
         "osc meta prj #{obs_project_name} --file #{tmpfile.path}"
       when :pkg
-        "osc meta pkg #{obs_project_name} obs-server --file #{tmpfile.path}"      
+        "osc meta pkg #{obs_project_name} obs-server --file #{tmpfile.path}"
       else
-        raise ArgumentError, "#{operation} not vaild" 
+        raise ArgumentError, "#{operation} not vaild"
       end
     end
+
     def capture2e_with_logs(cmd)
       logger.info("Execute command '#{cmd}'.")
       stdout_and_stderr_str, status = Open3.capture2e(cmd)
@@ -125,11 +126,12 @@ module PullRequestBuilder
         OpenStruct.new(name: 'SLE_12_SP4', path: 'OBS:Server:Unstable', arches: ['x86_64'])
       ]
     end
+
     # TODO
     # package name should be configurable
     def create_package
       send_meta_file("#{obs_project_name}-obs-server-meta", operation: :pkg)
-   end
+    end
 
     def new_package_template
       PackageTemplate.new(package_name = 'obs-server').to_xml

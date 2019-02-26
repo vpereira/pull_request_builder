@@ -5,14 +5,13 @@ require 'spec_helper'
 include PullRequestBuilder
 
 RSpec.describe ProjectMeta do
-
   let(:repositories_to_build) do
     [
       OpenStruct.new(name: 'SLE_15', path: 'OBS:Server:Unstable', arches: ['x86_64']),
       OpenStruct.new(name: 'SLE_12_SP4', path: 'OBS:Server:Unstable', arches: ['x86_64'])
     ]
   end
-  
+
   describe '.initialize' do
     it { expect(described_class.new('foo', 'bar', repositories_to_build)).not_to be_nil }
   end

@@ -1,15 +1,9 @@
 # This is the configuration used to check the rubocop source code.
-require: rubocop-rspec
 
 AllCops:
   Exclude:
     - 'fixtures/**/*'
   TargetRubyVersion: 2.5
-
-RSpec/PredicateMatcher:
-  Enabled: false
-RSpec/AnyInstance:
-  Enabled: false
 
 Naming/PredicateName:
   # Method define macros for dynamically generated method.
@@ -92,9 +86,3 @@ Metrics/ModuleLength:
 Performance/Caller:
   Exclude:
     - spec/rubocop/cop/performance/caller_spec.rb
-
-RSpec/PredicateMatcher:
-  EnforcedStyle: explicit
-
-RSpec/NestedGroups:
-  Max: 7
