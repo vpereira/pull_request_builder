@@ -72,6 +72,27 @@ module PullRequestBuilder
 
     private
 
+    def send_meta_file(filename, operation: :prj)
+      tmp_meta_file = Tempfile.open(filename)
+      begin
+        tmp_meta_file.write(project_meta)
+        capture2e_with_logs(osc_meta(tmp_meta_file, operation))
+      ensure
+        tmp_meta_file.close
+        tmp_meta_file.unlink
+      end
+     end
+
+    def osc_meta(tmpfile, operation)
+      case operation
+      when :prj
+        "osc meta prj #{obs_project_name} --file #{tmpfile.path}"
+      when :pkg
+        "osc meta pkg #{obs_project_name} obs-server --file #{tmpfile.path}"      
+      else
+        raise ArgumentError, "#{operation} not vaild" 
+      end
+    end
     def capture2e_with_logs(cmd)
       logger.info("Execute command '#{cmd}'.")
       stdout_and_stderr_str, status = Open3.capture2e(cmd)
@@ -85,11 +106,7 @@ module PullRequestBuilder
     end
 
     def create_project
-      Tempfile.open("#{pull_request_number}-meta") do |f|
-        f.write(project_meta)
-        f.close
-        capture2e_with_logs("osc meta prj #{obs_project_name} --file #{f.path}")
-      end
+      send_meta_file("#{pull_request_number}-meta", operation: :prj)
     end
 
     def project_meta
@@ -111,12 +128,8 @@ module PullRequestBuilder
     # TODO
     # package name should be configurable
     def create_package
-      Tempfile.open("#{obs_project_name}-obs-server-meta") do |f|
-        f.write(new_package_template)
-        f.close
-        capture2e_with_logs("osc meta pkg #{obs_project_name} obs-server --file #{f.path}")
-      end
-    end
+      send_meta_file("#{obs_project_name}-obs-server-meta", operation: :pkg)
+   end
 
     def new_package_template
       PackageTemplate.new(package_name = 'obs-server').to_xml
