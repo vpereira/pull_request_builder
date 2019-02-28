@@ -8,7 +8,7 @@ module PullRequestBuilder
 
     private
 
-    def checkout(project, output_dir)
+    def checkout(project, dir)
       execute(['co', project, '--output-dir', dir])
     end
 
