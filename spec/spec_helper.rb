@@ -3,6 +3,7 @@
 require 'vcr'
 require 'webmock'
 require 'pry'
+require 'byebug'
 require 'rspec-html-matchers'
 
 VCR.configure do |config|
