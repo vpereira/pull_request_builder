@@ -12,10 +12,18 @@ RSpec.describe ObsPullRequestPackage, :vcr do
 
   describe '.obs_project_name' do
     let(:obs_pull_request_package) do
-      described_class.new(pull_request: fake_pull_request, obs_package_name: 'obs-server', obs_project_name_prefix: 'Foo:Bar')
+      described_class.new(pull_request: fake_pull_request, obs_project_name: 'Foo:Bax', obs_package_name: 'obs-server', obs_project_name_prefix: 'Foo:Bar')
     end
 
-    it { expect(obs_pull_request_package.obs_project_name).to eq('Foo:Bar-1') }
+    it { expect(obs_pull_request_package.obs_project_name).to eq('Foo:Bax') }
+  end
+
+  describe '.obs_project_pr_name' do
+    let(:obs_pull_request_package) do
+      described_class.new(pull_request: fake_pull_request, obs_project_pr_name: 'Foo:Bax', obs_package_name: 'obs-server', obs_project_name_prefix: 'Foo:Bar')
+    end
+
+    it { expect(obs_pull_request_package.obs_project_pr_name).to eq('Foo:Bar-1') }
   end
 
   describe '.url' do

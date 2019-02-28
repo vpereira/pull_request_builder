@@ -3,7 +3,7 @@
 module PullRequestBuilder
   class ObsPullRequestPackage
     include ActiveModel::Model
-    attr_accessor :pull_request, :logger, :template_directory, :obs_project_name_prefix, :obs_package_name
+    attr_accessor :pull_request, :logger, :template_directory, :obs_project_name_prefix, :obs_package_name, :obs_project_name, :obs_project_pr_name
     PullRequest = Struct.new(:number)
 
     def self.all(logger)
@@ -16,7 +16,7 @@ module PullRequestBuilder
     end
 
     def delete
-      capture2e_with_logs("osc api -X DELETE source/#{obs_project_name}")
+      capture2e_with_logs("osc api -X DELETE source/#{obs_project_pr_name}")
     end
 
     def ==(other)
@@ -44,16 +44,16 @@ module PullRequestBuilder
       pull_request.merge_commit_sha
     end
 
-    def obs_project_name
+    def obs_project_pr_name
       "#{obs_project_name_prefix}-#{pull_request_number}"
     end
 
     def url
-      "https://build.opensuse.org/package/show/#{obs_project_name}/#{obs_package_name}"
+      "https://build.opensuse.org/package/show/#{obs_project_pr_name}/#{obs_package_name}"
     end
 
     def last_commited_sha
-      result = capture2e_with_logs("osc api /source/#{obs_project_name}/#{obs_package_name}/_history")
+      result = capture2e_with_logs("osc api /source/#{obs_project_pr_name}/#{obs_package_name}/_history")
       node = Nokogiri::XML(result).root
       return '' unless node
 
@@ -75,7 +75,7 @@ module PullRequestBuilder
     def send_meta_file(filename, operation: :prj)
       tmp_meta_file = Tempfile.open(filename)
       begin
-        tmp_meta_file.write(project_meta)
+        tmp_meta_file.write(operation == :prj ? project_meta : package_meta)
         capture2e_with_logs(osc_meta(tmp_meta_file, operation))
       ensure
         tmp_meta_file.close
@@ -86,9 +86,9 @@ module PullRequestBuilder
     def osc_meta(tmpfile, operation)
       case operation
       when :prj
-        "osc meta prj #{obs_project_name} --file #{tmpfile.path}"
+        "osc meta prj #{obs_project_pr_name} --file #{tmpfile.path}"
       when :pkg
-        "osc meta pkg #{obs_project_name} #{obs_package_name} --file #{tmpfile.path}"
+        "osc meta pkg #{obs_project_pr_name} #{obs_package_name} --file #{tmpfile.path}"
       else
         raise ArgumentError, "#{operation} not vaild"
       end
@@ -110,12 +110,16 @@ module PullRequestBuilder
       send_meta_file("#{pull_request_number}-meta", operation: :prj)
     end
 
+    def package_meta
+      PackageTemplate.new(obs_package_name).to_xml
+    end
+
     def project_meta
-      ProjectMeta.new(obs_project_name, project_title, repositories_to_build).to_xml
+      ProjectMeta.new(obs_project_pr_name, project_title, repositories_to_build).to_xml
     end
 
     def project_title
-      "https://github.com/openSUSE/open-build-service/pull/#{pull_request_number}"
+      pull_request.html_url
     end
 
     # TODO
@@ -130,7 +134,7 @@ module PullRequestBuilder
     # TODO
     # package name should be configurable
     def create_package
-      send_meta_file("#{obs_project_name}-#{obs_package_name}-meta", operation: :pkg)
+      send_meta_file("#{obs_package_name}-meta", operation: :pkg)
     end
 
     def new_package_template
@@ -139,18 +143,18 @@ module PullRequestBuilder
 
     def copy_files
       Dir.mktmpdir do |dir|
-        capture2e_with_logs("osc co OBS:Server:Unstable/#{obs_package_name} --output-dir #{dir}/template")
-        capture2e_with_logs("osc co #{obs_project_name}/#{obs_package_name} --output-dir #{dir}/#{obs_project_name}")
+        capture2e_with_logs("osc co #{obs_project_name}/#{obs_package_name} --output-dir #{dir}/template")
+        capture2e_with_logs("osc co #{obs_project_pr_name}/#{obs_package_name} --output-dir #{dir}/#{obs_project_pr_name}")
         copy_package_files(dir)
-        capture2e_with_logs("osc ar #{dir}/#{obs_project_name}")
-        capture2e_with_logs("osc commit #{dir}/#{obs_project_name} -m '#{commit_sha}'")
+        capture2e_with_logs("osc ar #{dir}/#{obs_project_pr_name}")
+        capture2e_with_logs("osc commit #{dir}/#{obs_project_pr_name} -m '#{commit_sha}'")
       end
     end
 
     def copy_package_files(dir)
       Dir.entries("#{dir}/template").reject { |name| name.start_with?('.') }.each do |file|
         path = File.join(dir, 'template', file)
-        target_path = File.join(dir, obs_project_name, file)
+        target_path = File.join(dir, obs_project_pr_name, file)
         if file == '_service'
           copy_service_file(path, target_path)
         else
