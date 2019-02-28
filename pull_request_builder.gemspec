@@ -38,4 +38,5 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency 'activemodel', '~> 5.2'
   spec.add_runtime_dependency 'nokogiri', '~> 1.10'
   spec.add_runtime_dependency 'octokit', '~> 4.9'
+  spec.add_runtime_dependency 'cheetah', '~> 0.5.0'
 end

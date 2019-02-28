@@ -5,6 +5,7 @@ module PullRequestBuilder
     attr_reader :packages
 
     def initialize(config = {})
+      @osc = OSC.new(apiurl: config[:build_server])
       @client = Octokit::Client.new(config[:credentials])
       @obs_project_name_prefix = config[:build_server_project_integration_prefix]
       @logger = config[:logging] ? Logger.new(STDOUT) : Logger.new(nil)
