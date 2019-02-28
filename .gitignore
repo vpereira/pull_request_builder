@@ -6,3 +6,5 @@
 /pkg/
 /spec/reports/
 /tmp/
+*.swp
+config/config.yml
