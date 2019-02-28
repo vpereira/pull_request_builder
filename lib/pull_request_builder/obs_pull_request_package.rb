@@ -57,7 +57,11 @@ module PullRequestBuilder
       node = Nokogiri::XML(result).root
       return '' unless node
 
-      node.xpath('.//revision/comment').last.content
+      begin
+        node.xpath('.//revision/comment').last.content
+      rescue StandardError
+        ''
+      end
     end
 
     def create
@@ -75,7 +79,7 @@ module PullRequestBuilder
     def send_meta_file(filename, operation: :prj)
       tmp_meta_file = Tempfile.open(filename)
       begin
-        tmp_meta_file.write(operation == :prj ? project_meta : package_meta)
+        tmp_meta_file.puts(operation == :prj ? project_meta : package_meta)
         capture2e_with_logs(osc_meta(tmp_meta_file, operation))
       ensure
         tmp_meta_file.close
@@ -111,7 +115,7 @@ module PullRequestBuilder
     end
 
     def package_meta
-      PackageTemplate.new(obs_package_name).to_xml
+      PackageTemplate.new(obs_package_name, obs_project_pr_name).to_xml
     end
 
     def project_meta

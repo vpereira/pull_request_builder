@@ -2,10 +2,11 @@
 
 module PullRequestBuilder
   class PackageTemplate
-    attr_reader :package_name
+    attr_reader :package_name, :project_name
 
-    def initialize(package_name)
+    def initialize(package_name, project_name)
       @package_name = package_name
+      @project_name = project_name
     end
 
     def template
