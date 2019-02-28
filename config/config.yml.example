@@ -5,4 +5,4 @@
   :access_token: my-oath-tokens
 :logging: false
 :build_server: https://build.opensuse.org
-:build_server_project_integration: OBS:Server:Unstable:TestGithub:PR
+:build_server_project_integration_prefix: OBS:Server:Unstable:TestGithub:PR

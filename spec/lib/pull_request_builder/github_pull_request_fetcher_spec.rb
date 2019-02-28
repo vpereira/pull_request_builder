@@ -15,7 +15,10 @@ RSpec.describe GithubPullRequestFetcher, :vcr do
       allow_any_instance_of(GithubStatusReporter).to receive(:report).and_return(nil)
     end
 
-    let(:fetcher) { GithubPullRequestFetcher.new(credentials: { access_token: 'b723c67f1309dcded3674757c2e151daa39e358a' }) }
+    let(:fetcher) do
+      GithubPullRequestFetcher.new(credentials: { access_token: 'b723c67f1309dcded3674757c2e151daa39e358a' },
+                                   build_server_project_integration_prefix: 'OBS:Server:Unstable:TestGithub:PR')
+    end
 
     let(:result) { fetcher.pull('openSUSE/open-build-service', 'master') }
 

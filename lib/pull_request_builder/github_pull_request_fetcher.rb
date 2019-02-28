@@ -6,6 +6,7 @@ module PullRequestBuilder
 
     def initialize(config = {})
       @client = Octokit::Client.new(config[:credentials])
+      @obs_project_name_prefix = config[:build_server_project_integration_prefix]
       @logger = config[:logging] ? Logger.new(STDOUT) : Logger.new(nil)
       @packages = []
     end
@@ -16,7 +17,7 @@ module PullRequestBuilder
 
         @logger.info('')
         @logger.info(line_seperator(pull_request))
-        package = ObsPullRequestPackage.new(pull_request: pull_request, logger: @logger)
+        package = ObsPullRequestPackage.new(pull_request: pull_request, logger: @logger, obs_project_name_prefix: @obs_project_name_prefix)
         package.create
         GithubStatusReporter.new(repository: prj, package: package, client: @client, logger: @logger).report
         package

@@ -3,11 +3,11 @@
 module PullRequestBuilder
   class ObsPullRequestPackage
     include ActiveModel::Model
-    attr_accessor :pull_request, :logger, :template_directory
+    attr_accessor :pull_request, :logger, :template_directory, :obs_project_name_prefix, :obs_package_name
     PullRequest = Struct.new(:number)
 
     def self.all(logger)
-      result = `osc api "search/project?match=starts-with(@name,'OBS:Server:Unstable:TestGithub:PR')"`
+      result = `osc api "search/project?match=starts-with(@name, #{obs_project_name_prefix})"`
       xml = Nokogiri::XML(result)
       xml.xpath('//project').map do |project|
         pull_request_number = project.attribute('name').to_s.split('-').last.to_i
@@ -45,15 +45,15 @@ module PullRequestBuilder
     end
 
     def obs_project_name
-      "OBS:Server:Unstable:TestGithub:PR-#{pull_request_number}"
+      "#{obs_project_name_prefix}-#{pull_request_number}"
     end
 
     def url
-      "https://build.opensuse.org/package/show/#{obs_project_name}/obs-server"
+      "https://build.opensuse.org/package/show/#{obs_project_name}/#{obs_package_name}"
     end
 
     def last_commited_sha
-      result = capture2e_with_logs("osc api /source/#{obs_project_name}/obs-server/_history")
+      result = capture2e_with_logs("osc api /source/#{obs_project_name}/#{obs_package_name}/_history")
       node = Nokogiri::XML(result).root
       return '' unless node
 
@@ -88,7 +88,7 @@ module PullRequestBuilder
       when :prj
         "osc meta prj #{obs_project_name} --file #{tmpfile.path}"
       when :pkg
-        "osc meta pkg #{obs_project_name} obs-server --file #{tmpfile.path}"
+        "osc meta pkg #{obs_project_name} #{obs_package_name} --file #{tmpfile.path}"
       else
         raise ArgumentError, "#{operation} not vaild"
       end
@@ -130,17 +130,17 @@ module PullRequestBuilder
     # TODO
     # package name should be configurable
     def create_package
-      send_meta_file("#{obs_project_name}-obs-server-meta", operation: :pkg)
+      send_meta_file("#{obs_project_name}-#{obs_package_name}-meta", operation: :pkg)
     end
 
     def new_package_template
-      PackageTemplate.new(package_name = 'obs-server').to_xml
+      PackageTemplate.new(package_name = obs_package_name).to_xml
     end
 
     def copy_files
       Dir.mktmpdir do |dir|
-        capture2e_with_logs("osc co OBS:Server:Unstable/obs-server --output-dir #{dir}/template")
-        capture2e_with_logs("osc co #{obs_project_name}/obs-server --output-dir #{dir}/#{obs_project_name}")
+        capture2e_with_logs("osc co OBS:Server:Unstable/#{obs_package_name} --output-dir #{dir}/template")
+        capture2e_with_logs("osc co #{obs_project_name}/#{obs_package_name} --output-dir #{dir}/#{obs_project_name}")
         copy_package_files(dir)
         capture2e_with_logs("osc ar #{dir}/#{obs_project_name}")
         capture2e_with_logs("osc commit #{dir}/#{obs_project_name} -m '#{commit_sha}'")
