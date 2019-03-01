@@ -27,7 +27,7 @@ module PullRequestBuilder
     end
 
     def delete
-      ObsPullRequestPackage.all(@logger).each do |obs_package|
+      ObsPullRequestPackage.all(@logger, @obs_project_name_prefix).each do |obs_package|
         next if @packages.any? { |pr_package| pr_package.pull_request.number == obs_package.pull_request.number }
 
         obs_package.delete

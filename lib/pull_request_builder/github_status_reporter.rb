@@ -32,9 +32,8 @@ module PullRequestBuilder
       count_all = summary[:success] + summary[:failure] + summary[:pending]
       count_finished = count_all - summary[:pending]
 
-      result = "#{count_finished}/#{count_all} processed"
+      result = String.new("#{count_finished}/#{count_all} processed")
       result << " | #{summary[:failure]} failures" if summary[:failure].positive?
-
       result
     end
 
@@ -76,7 +75,7 @@ module PullRequestBuilder
       return @summary if @summary
 
       @summary = { failure: 0, success: 0, pending: 0, exclusion: 0 }
-      result = `osc api /build/#{package.obs_project_name}/_result`
+      result = `osc api /build/#{package.obs_project_pr_name}/_result`
       node = Nokogiri::XML(result).root
       node.xpath('.//status').each do |status|
         @summary[judge_code(status['code'])] += 1

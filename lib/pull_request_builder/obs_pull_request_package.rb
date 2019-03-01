@@ -6,7 +6,7 @@ module PullRequestBuilder
     attr_accessor :pull_request, :logger, :template_directory, :obs_project_name_prefix, :obs_package_name, :obs_project_name, :obs_project_pr_name
     PullRequest = Struct.new(:number)
 
-    def self.all(logger)
+    def self.all(logger, obs_project_name_prefix)
       result = `osc api "search/project?match=starts-with(@name, #{obs_project_name_prefix})"`
       xml = Nokogiri::XML(result)
       xml.xpath('//project').map do |project|
@@ -80,9 +80,9 @@ module PullRequestBuilder
       tmp_meta_file = Tempfile.open(filename)
       begin
         tmp_meta_file.puts(operation == :prj ? project_meta : package_meta)
+        tmp_meta_file.close
         capture2e_with_logs(osc_meta(tmp_meta_file, operation))
       ensure
-        tmp_meta_file.close
         tmp_meta_file.unlink
       end
     end
