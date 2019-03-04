@@ -32,26 +32,4 @@ RSpec.describe ObsPullRequestPackage, :vcr do
     end
     it { expect(obs_pull_request_package.url).to eq('https://build.opensuse.org/package/show/Foo:Bar-1/obs-server') }
   end
-
-  describe '.osc_meta' do
-    let(:obs_pull_request_package) do
-      described_class.new(pull_request: fake_pull_request, obs_package_name: 'obs-server')
-    end
-    let(:tempfile) { ::Tempfile.new('foo') }
-    before do
-      allow_any_instance_of(described_class).to receive(:obs_project_name).and_return('foo')
-    end
-
-    context 'pkg' do
-      it { expect(obs_pull_request_package.send(:osc_meta, tempfile, :pkg)).to be_a(String) }
-    end
-
-    context 'prj' do
-      it { expect(obs_pull_request_package.send(:osc_meta, tempfile, :prj)).to be_a(String) }
-    end
-
-    context 'non-existent operation' do
-      it { expect { obs_pull_request_package.send(:osc_meta, tempfile, :nope) }.to raise_error(ArgumentError) }
-    end
-  end
 end

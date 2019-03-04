@@ -3,7 +3,7 @@
 module PullRequestBuilder
   class ObsPullRequestPackage
     include ActiveModel::Model
-    attr_accessor :pull_request, :logger, :template_directory, :obs_project_name_prefix, :obs_package_name, :obs_project_name, :obs_project_pr_name
+    attr_accessor :pull_request, :logger, :template_directory, :obs_project_name_prefix, :obs_package_name, :obs_project_name, :obs_project_pr_name, :osc
     PullRequest = Struct.new(:number)
 
     def self.all(logger, obs_project_name_prefix)
@@ -16,7 +16,7 @@ module PullRequestBuilder
     end
 
     def delete
-      capture2e_with_logs("osc api -X DELETE source/#{obs_project_pr_name}")
+      osc.delete_project("source/#{obs_project_name}")
     end
 
     def ==(other)
@@ -48,20 +48,20 @@ module PullRequestBuilder
       "#{obs_project_name_prefix}-#{pull_request_number}"
     end
 
+    # TODO
+    # address must be configurable
     def url
       "https://build.opensuse.org/package/show/#{obs_project_pr_name}/#{obs_package_name}"
     end
 
     def last_commited_sha
-      result = capture2e_with_logs("osc api /source/#{obs_project_pr_name}/#{obs_package_name}/_history")
-      node = Nokogiri::XML(result).root
-      return '' unless node
+      # if its a new PR, get_history will fail with a 404 and we have to ignore it
 
-      begin
-        node.xpath('.//revision/comment').last.content
-      rescue StandardError
-        ''
-      end
+      result = osc.get_history("#{obs_project_pr_name}/#{obs_package_name}")
+      node = Nokogiri::XML(result).root
+      node.xpath('.//revision/comment').last.content
+    rescue StandardError, Cheetah::ExecutionFailed
+      ''
     end
 
     def create
@@ -81,7 +81,7 @@ module PullRequestBuilder
       begin
         tmp_meta_file.puts(operation == :prj ? project_meta : package_meta)
         tmp_meta_file.close
-        capture2e_with_logs(osc_meta(tmp_meta_file, operation))
+        osc_meta(tmp_meta_file, operation)
       ensure
         tmp_meta_file.unlink
       end
@@ -90,9 +90,9 @@ module PullRequestBuilder
     def osc_meta(tmpfile, operation)
       case operation
       when :prj
-        "osc meta prj #{obs_project_pr_name} --file #{tmpfile.path}"
+        osc.meta_prj(obs_project_pr_name, tmpfile.path)
       when :pkg
-        "osc meta pkg #{obs_project_pr_name} #{obs_package_name} --file #{tmpfile.path}"
+        osc.meta_pkg(obs_project_pr_name, obs_package_name, tmpfile.path)
       else
         raise ArgumentError, "#{operation} not vaild"
       end
@@ -147,11 +147,11 @@ module PullRequestBuilder
 
     def copy_files
       Dir.mktmpdir do |dir|
-        capture2e_with_logs("osc co #{obs_project_name}/#{obs_package_name} --output-dir #{dir}/template")
-        capture2e_with_logs("osc co #{obs_project_pr_name}/#{obs_package_name} --output-dir #{dir}/#{obs_project_pr_name}")
+        osc.checkout(File.join(obs_project_name, obs_package_name), File.join(dir, 'template'))
+        osc.checkout(File.join(obs_project_pr_name, obs_package_name), File.join(dir, obs_project_pr_name))
         copy_package_files(dir)
-        capture2e_with_logs("osc ar #{dir}/#{obs_project_pr_name}")
-        capture2e_with_logs("osc commit #{dir}/#{obs_project_pr_name} -m '#{commit_sha}'")
+        osc.add_remove(File.join(dir, obs_project_pr_name))
+        osc.commit(File.join(dir, obs_project_pr_name), commit_sha)
       end
     end
 
