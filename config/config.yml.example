@@ -6,3 +6,7 @@
 :logging: false
 :build_server: https://build.opensuse.org
 :build_server_project_integration_prefix: OBS:Server:Unstable:TestGithub:PR
+:build_server_project: OBS:Server:Unstable
+:build_server_package_name: obs-server
+:git_repository: https://github.com/openSUSE/open-buildservice
+:git_branch: master
