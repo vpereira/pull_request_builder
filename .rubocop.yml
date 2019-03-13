@@ -3,7 +3,7 @@
 AllCops:
   Exclude:
     - 'fixtures/**/*'
-  TargetRubyVersion: 2.5
+  TargetRubyVersion: 2.6
 
 Naming/PredicateName:
   # Method define macros for dynamically generated method.
@@ -70,13 +70,17 @@ Lint/BooleanSymbol:
   Enabled: false
 
 Metrics/LineLength:
-  Max: 99
+  Max: 150
 
 Metrics/BlockLength:
   Exclude:
     - '*.gemspec'
     - 'Rakefile'
     - '**/*.rake'
+    - 'spec/**/*.rb'
+
+Style/MixinUsage:
+  Exclude:
     - 'spec/**/*.rb'
 
 Metrics/ModuleLength:
