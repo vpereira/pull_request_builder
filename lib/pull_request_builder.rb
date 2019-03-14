@@ -21,6 +21,5 @@ require_relative 'pull_request_builder/github_status_reporter'
 require_relative 'pull_request_builder/obs_pull_request_package'
 require_relative 'pull_request_builder/github_pull_request_fetcher'
 
-
 module PullRequestBuilder
 end

@@ -34,6 +34,15 @@ module PullRequestBuilder
       execute(['commit', file_path, '-m', message])
     end
 
+    def search_project(name_prefix)
+      search_string = "search/project?match=starts-with(@name,'#{name_prefix}')"
+      execute(['api', search_string])
+    end
+
+    def apiurl
+      @apiurl ||= 'https://api.opensuse.org'
+    end
+
     private
 
     def meta(params = {})
