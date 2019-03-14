@@ -30,7 +30,7 @@ module PullRequestBuilder
         next if @packages.any? { |pr_package| pr_package.pull_request.number == obs_package.pull_request.number }
 
         @config.logger.info('Delete obs_package')
-        obs_package.delete
+        @config.build_server_package_name
       end
     end
 
