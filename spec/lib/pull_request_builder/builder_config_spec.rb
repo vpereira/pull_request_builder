@@ -13,7 +13,7 @@ RSpec.describe BuilderConfig do
 
     it { expect(config.build_server).to eq('https://build.opensuse.org') }
     it { expect(config.git_branch).to eq('master') }
-    it { expect(config.git_repository).to eq('https://github.com/openSUSE/open-build-service.git') }
+    it { expect(config.git_repository_full_address).to eq('https://github.com/openSUSE/open-build-service.git') }
     it { expect(config.build_server_project).to eq('OBS:Server:Unstable') }
   end
 end

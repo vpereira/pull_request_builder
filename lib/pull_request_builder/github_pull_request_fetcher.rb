@@ -9,8 +9,8 @@ module PullRequestBuilder
       @packages = []
     end
 
-    def pull(prj, _branch = 'master')
-      @packages = @config.octokit_client.pull_requests(prj).collect do |pull_request|
+    def pull
+      @packages = @config.octokit_client.pull_requests(@config.git_repository).collect do |pull_request|
         next if pull_request.base.ref != @config.git_branch
 
         @config.logger.info('')
@@ -20,7 +20,7 @@ module PullRequestBuilder
                                             obs_package_name: @config.build_server_package_name, obs_project_name: @config.build_server_project,
                                             osc: @config.osc)
         package.create
-        GithubStatusReporter.new(repository: prj, package: package, client: @config.octokit_client, logger: @config.logger).report
+        GithubStatusReporter.new(repository: @config.git_repository, package: package, client: @config.octokit_client, logger: @config.logger).report
         package
       end
     end
