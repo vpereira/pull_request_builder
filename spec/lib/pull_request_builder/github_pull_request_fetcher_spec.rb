@@ -16,7 +16,8 @@ RSpec.describe GithubPullRequestFetcher, :vcr do
     end
 
     let(:fetcher) do
-      GithubPullRequestFetcher.new(credentials: { access_token: 'b723c67f1309dcded3674757c2e151daa39e358a' },
+      GithubPullRequestFetcher.new(credentials: { access_token: '440366022c2eb57fedf38ab241eaf73fa74008dc' },
+                                   git_repository: 'vpereira/hello_world',
                                    build_server_project_integration_prefix: 'OBS:Server:Unstable:TestGithub:PR')
     end
 

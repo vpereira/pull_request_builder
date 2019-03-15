@@ -11,9 +11,9 @@ module PullRequestBuilder
       @octokit_client = Octokit::Client.new(config[:credentials])
       @logger = config[:logging] ? Logger.new(STDOUT) : Logger.new(nil)
       @build_server_project = config.fetch(:build_server_project, 'OBS:Server:Unstable')
-      @git_branch = config.fetch(:github_branch, 'master')
-      @git_server = config.fetch(:github_repository, 'https://github.com')
-      @git_repository = config.fetch(:github_repository, 'openSUSE/open-build-service.git')
+      @git_branch = config.fetch(:git_branch, 'master')
+      @git_server = config.fetch(:git_repository, 'https://github.com')
+      @git_repository = config.fetch(:git_repository, 'openSUSE/open-build-service')
       @build_server = config.fetch(:build_server, 'https://build.opensuse.org')
       @build_server_package_name = config.fetch(:build_server_package_name, 'obs-server')
       @build_server_project_integration_prefix = config.fetch(:build_server_project_integration_prefix,

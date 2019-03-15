@@ -6,7 +6,7 @@ include PullRequestBuilder
 
 RSpec.describe GithubStatusReporter, :vcr do
   let(:client) do
-    Octokit::Client.new(access_token: '6fccee211b93aae7aa24b0263d05d59cdx4a9ec1',
+    Octokit::Client.new(access_token: '190af1eb44dcd34dcc26799cb1eb75cf17c9ea48',
                         logging: false)
   end
 
