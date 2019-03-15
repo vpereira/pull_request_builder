@@ -20,7 +20,7 @@ RSpec.describe GithubPullRequestFetcher, :vcr do
                                    build_server_project_integration_prefix: 'OBS:Server:Unstable:TestGithub:PR')
     end
 
-    let(:result) { fetcher.pull('openSUSE/open-build-service', 'master') }
+    let(:result) { fetcher.pull }
 
     it { expect(result).to be_an(Array) }
     it { expect(result.first).to be_an(ObsPullRequestPackage) }
