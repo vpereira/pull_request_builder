@@ -7,6 +7,6 @@ require_relative '../lib/pull_request_builder'
 if $PROGRAM_NAME == __FILE__
   config = YAML.load_file('config/config.yml')
   fetcher = PullRequestBuilder::GithubPullRequestFetcher.new(config)
-  fetcher.pull('vpereira/hello_world', 'master')
+  fetcher.pull
   fetcher.delete
 end
