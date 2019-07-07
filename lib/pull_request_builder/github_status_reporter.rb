@@ -3,7 +3,7 @@
 module PullRequestBuilder
   class GithubStatusReporter
     include ActiveModel::Model
-    attr_accessor :client, :logger, :package, :repository
+    attr_accessor :client, :logger, :package, :repository, :osc
 
     def report
       if update?
@@ -75,7 +75,7 @@ module PullRequestBuilder
       return @summary if @summary
 
       @summary = { failure: 0, success: 0, pending: 0, exclusion: 0 }
-      result = `osc api /build/#{package.obs_project_pr_name}/_result`
+      result = osc.build_result(package)
       node = Nokogiri::XML(result).root
       node.xpath('.//status').each do |status|
         @summary[judge_code(status['code'])] += 1

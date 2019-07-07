@@ -34,6 +34,10 @@ module PullRequestBuilder
       execute(['commit', file_path, '-m', message])
     end
 
+    def build_result(package)
+      execute(['api', File.join('build', package.obs_project_pr_name, '_result')])
+    end
+
     def search_project(name_prefix)
       search_string = "search/project?match=starts-with(@name,'#{name_prefix}')"
       execute(['api', search_string])
