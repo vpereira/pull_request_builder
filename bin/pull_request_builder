@@ -5,7 +5,12 @@ require_relative '../lib/pull_request_builder'
 
 # The "runner used" by obs-tools
 if $PROGRAM_NAME == __FILE__
-  config = YAML.load_file('config/config.yml')
+  config_file = if ARGV.first.nil?
+                  'config/config.yml'
+                else
+                  ARGV.first
+                end
+  config = YAML.load_file(config_file)
   fetcher = PullRequestBuilder::GithubPullRequestFetcher.new(config)
   fetcher.pull
   fetcher.delete
