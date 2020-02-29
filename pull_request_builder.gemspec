@@ -28,7 +28,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'bundler', '~> 2.0.1'
   spec.add_development_dependency 'byebug', '~> 11.0.0'
   spec.add_development_dependency 'pry', '~> 0.12'
-  spec.add_development_dependency 'rake', '~> 10.0'
+  spec.add_development_dependency 'rake', '~> 13.0'
   spec.add_development_dependency 'rspec', '~> 3.8'
   spec.add_development_dependency 'rspec-html-matchers', '~> 0.9.1'
   spec.add_development_dependency 'rubocop', '~> 0.64'
