@@ -25,7 +25,7 @@ Or install it yourself as:
 
 We have it being used here: https://github.com/openSUSE/obs-tools/tree/master/pull_request_package
 
-Please look our [Wiki](https://github.com/vpereira/pull_request_builder/wiki/running) if you need more specific information
+Please look our [Wiki](https://github.com/openSUSE/obs-pullrequest-builder) if you need more specific information
 
 ## Development
 
