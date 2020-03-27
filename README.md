@@ -3,7 +3,7 @@
 Integrate your CI pipeline with Open Build Service, being possible to build your PR as package in the trusty OBS!
 
 ## Build Status
-[![Build Status](https://travis-ci.com/vpereira/pull_request_builder.svg?branch=master)](https://travis-ci.com/vpereira/pull_request_builder)
+[![CircleCI](https://circleci.com/gh/vpereira/pull_request_builder.svg?style=svg)](https://app.circleci.com/pipelines/github/vpereira/pull_request_builder)
 
 ## Installation
 
