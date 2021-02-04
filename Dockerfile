@@ -1,6 +1,6 @@
 FROM opensuse/tumbleweed
 
-RUN zypper -n in osc ruby2.6 ruby2.6-devel git gcc make sudo libxml2-devel zlib-devel libxslt-devel
+RUN zypper -n in osc ruby2.7 ruby2.7-devel git gcc make sudo libxml2-devel zlib-devel libxslt-devel
 RUN gem install bundler
 RUN bundle config build.nokogiri --use-system-libraries
 
